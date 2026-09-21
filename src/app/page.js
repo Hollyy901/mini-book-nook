@@ -1,4 +1,8 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const BOOKS = [
   {
@@ -44,6 +48,16 @@ const BOOKS = [
 ];
 
 export default function Home() {
+  const [wishlist, setWishlist] = useState([]);
+
+  const toggleWishlist = (bookId) => {
+    setWishlist((prev) =>
+      prev.includes(bookId)
+        ? prev.filter((id) => id !== bookId)
+        : [...prev, bookId]
+    );
+  };
+
   return (
     <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px 0' }}>
       {/* Hero Banner */}
@@ -65,7 +79,7 @@ export default function Home() {
       {/* Featured Books Grid */}
       <section>
         <h2 style={{ fontSize: '24px', color: '#1f2937', marginBottom: '20px' }}>
-          Featured Books
+          Featured Books ({wishlist.length} Wishlisted)
         </h2>
 
         <div style={{
@@ -73,101 +87,113 @@ export default function Home() {
           gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
           gap: '24px'
         }}>
-          {BOOKS.map((book) => (
-            <div 
-              key={book.id} 
-              style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                backgroundColor: '#fff',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-              }}
-            >
-              {/* Cover Image Container */}
-              <div style={{ position: 'relative', width: '100%', height: '260px', backgroundColor: '#e5e7eb' }}>
-                <Image
-                  src={book.cover}
-                  alt={book.title}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  sizes="(max-width: 768px) 100vw, 220px"
-                />
-              </div>
+          {BOOKS.map((book) => {
+            const isWishlisted = wishlist.includes(book.id);
 
-              {/* Book Details */}
-              <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
-                <div>
-                  <span style={{ 
-                    fontSize: '11px', 
-                    fontWeight: 'bold', 
-                    color: '#2563eb', 
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    {book.category}
-                  </span>
-                  <h3 style={{ fontSize: '16px', margin: '6px 0 4px', color: '#111827' }}>
-                    {book.title}
-                  </h3>
-                  <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 12px 0' }}>
-                    {book.author}
-                  </p>
-                  <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#111827', display: 'block', marginBottom: '14px' }}>
-                    {book.price}
-                  </span>
+            return (
+              <div 
+                key={book.id} 
+                style={{
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  backgroundColor: '#fff',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                }}
+              >
+                {/* Cover Image Container */}
+                <div style={{ position: 'relative', width: '100%', height: '260px', backgroundColor: '#e5e7eb' }}>
+                  <Image
+                    src={book.cover}
+                    alt={book.title}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="(max-width: 768px) 100vw, 220px"
+                  />
                 </div>
 
-                {/* Action Buttons Row */}
-                <div style={{ display: 'flex', gap: '6px', marginTop: 'auto' }}>
-                  <button style={{
-                    flex: 1,
-                    backgroundColor: '#111827',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '6px 8px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontWeight: '500'
-                  }}>
-                    Details
-                  </button>
+                {/* Book Details */}
+                <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+                  <div>
+                    <span style={{ 
+                      fontSize: '11px', 
+                      fontWeight: 'bold', 
+                      color: '#2563eb', 
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      {book.category}
+                    </span>
+                    <h3 style={{ fontSize: '16px', margin: '6px 0 4px', color: '#111827' }}>
+                      {book.title}
+                    </h3>
+                    <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 12px 0' }}>
+                      {book.author}
+                    </p>
+                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#111827', display: 'block', marginBottom: '14px' }}>
+                      {book.price}
+                    </span>
+                  </div>
 
-                  <button style={{
-                    flex: 1,
-                    backgroundColor: '#2563eb',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '6px 8px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontWeight: '500'
-                  }}>
-                    Read
-                  </button>
+                  {/* Action Buttons Row */}
+                  <div style={{ display: 'flex', gap: '6px', marginTop: 'auto' }}>
+                    <Link 
+                      href={`/books/${book.id}`}
+                      style={{
+                        flex: 1,
+                        backgroundColor: '#111827',
+                        color: '#fff',
+                        textDecoration: 'none',
+                        textAlign: 'center',
+                        padding: '6px 8px',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        display: 'inline-block'
+                      }}
+                    >
+                      Details
+                    </Link>
 
-                  <button style={{
-                    flex: 1,
-                    backgroundColor: '#f3f4f6',
-                    color: '#374151',
-                    border: '1px solid #d1d5db',
-                    padding: '6px 8px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontWeight: '500'
-                  }}>
-                    ♡ Wishlist
-                  </button>
+                    <button style={{
+                      flex: 1,
+                      backgroundColor: '#2563eb',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '6px 8px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                      fontWeight: '500'
+                    }}>
+                      Read
+                    </button>
+
+                    <button 
+                      onClick={() => toggleWishlist(book.id)}
+                      style={{
+                        flex: 1,
+                        backgroundColor: isWishlisted ? '#fee2e2' : '#f3f4f6',
+                        color: isWishlisted ? '#dc2626' : '#374151',
+                        border: isWishlisted ? '1px solid #fca5a5' : '1px solid #d1d5db',
+                        padding: '6px 8px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {isWishlisted ? '♥ Wishlisted' : '♡ Wishlist'}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </main>
